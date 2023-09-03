@@ -1,21 +1,27 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
+import bcrypt from "bcrypt";
 
-export async function authController(req: Request, res: Response) {
-  const { email, fullname, password, meta } = req.body;
+export class AuthController {
+    
+  public static async register(req: Request, res: Response) {
+    const { email, fullname, password, meta } = req.body;
 
-  try {
-    const newUser = await User.create({
-      email,
-      fullname,
-      password,
-      meta,
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await newUser.save();
+    try {
+      const newUser = await User.create({
+        email,
+        fullname,
+        password: hashedPassword,
+        meta,
+      });
 
-    res.send({ msg: "User created", newUser });
-  } catch (error) {
-    console.log(error);
+      await newUser.save();
+
+      res.send({ msg: "User created", newUser });
+    } catch (error) {
+      console.log("error", error);
+    }
   }
 }
