@@ -8,7 +8,7 @@
     "noUnusedLocals": false,
     "skipLibCheck": true,
     "incremental": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "removeComments": true,
     "declaration": false,
     "moduleResolution": "node",

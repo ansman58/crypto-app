@@ -8,7 +8,7 @@ const port = process.env.PORT || 3001;
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
-//@ts-ignore
+
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
 });
