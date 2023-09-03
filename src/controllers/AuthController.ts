@@ -4,6 +4,9 @@ import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import { HTTP_STATUS_CODES } from "../constants";
 
+const { CREATED, INTERNAL_SERVER_ERROR, BAD_REQUEST, NOT_FOUND } =
+  HTTP_STATUS_CODES;
+
 export class AuthController {
   static async login(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -12,9 +15,7 @@ export class AuthController {
       const user = await User.findOne({ where: { email } });
 
       if (!user?.email) {
-        return res
-          .status(HTTP_STATUS_CODES.NOT_FOUND)
-          .send({ msg: "Email does not exist" });
+        return res.status(NOT_FOUND).send({ msg: "Email does not exist" });
       }
 
       const comparePassword = await bcrypt.compare(
@@ -23,9 +24,7 @@ export class AuthController {
       );
 
       if (!comparePassword) {
-        return res
-          .status(HTTP_STATUS_CODES.BAD_REQUEST)
-          .send({ msg: "Password is incorrect" });
+        return res.status(BAD_REQUEST).send({ msg: "Password is incorrect" });
       }
 
       const token = jsonwebtoken.sign(
@@ -36,12 +35,12 @@ export class AuthController {
 
       return res.send({
         msg: "Login successful",
-        token,
         user,
+        token,
       });
     } catch (error) {
       console.log(error);
-      res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).send({ msg: error });
+      res.status(INTERNAL_SERVER_ERROR).send({ msg: error });
     }
   }
 
@@ -60,12 +59,10 @@ export class AuthController {
 
       await newUser.save();
 
-      res
-        .status(HTTP_STATUS_CODES.CREATED)
-        .send({ msg: "User created", newUser });
+      res.status(CREATED).send({ msg: "User created", newUser });
     } catch (error) {
       console.log("error", error);
-      res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).send({ msg: error });
+      res.status(INTERNAL_SERVER_ERROR).send({ msg: error });
     }
   }
 }
