@@ -1,14 +1,14 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { User } from "../models/User";
 import bcrypt from "bcrypt";
-import jsonwebtoken from "jsonwebtoken";
 import { HTTP_STATUS_CODES } from "../constants";
+import { Authorize } from "../utils/auth";
 
 const { CREATED, INTERNAL_SERVER_ERROR, BAD_REQUEST, NOT_FOUND } =
   HTTP_STATUS_CODES;
 
 export class AuthController {
-  static async login(req: Request, res: Response) {
+  static async login(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
 
     try {
@@ -27,11 +27,7 @@ export class AuthController {
         return res.status(BAD_REQUEST).send({ msg: "Password is incorrect" });
       }
 
-      const token = jsonwebtoken.sign(
-        { id: user.id },
-        process.env.JWT_SECRET as string,
-        { expiresIn: process.env.JWT_EXPIRES_IN }
-      );
+      const token = await Authorize.generateToken(req, res);
 
       return res.send({
         msg: "Login successful",

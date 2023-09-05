@@ -1,4 +1,6 @@
-export const HTTP_STATUS_CODES = {
+import { StatusCodeTypes } from "./interfaces/statusCodes";
+
+export const HTTP_STATUS_CODES: StatusCodeTypes = {
   OK: 200,
   CREATED: 201,
   ACCEPTED: 202,
