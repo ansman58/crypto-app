@@ -9,8 +9,14 @@ router.post("/login", AuthController.login);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
 
-router.get("google/redirect", (req: Request, res: Response) => {
-  res.send({ msg: "you reached the callback URL" });
-});
+router.get(
+  "/google/redirect",
+  passport.authenticate("google"),
+  (req: Request, res: Response) => {
+    console.log(req.body);
+    // res.send(req.body)
+    res.send("you reached the callback URL");
+  }
+);
 
 export default router;

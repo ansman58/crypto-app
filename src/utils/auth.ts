@@ -20,7 +20,7 @@ export class Authorize {
     }
   }
 
-  static isAuthorized(req: Request, res: Response, next: NextFunction) {
+  static isVeryfied(req: Request, res: Response, next: NextFunction) {
     try {
       const authorization = req.headers.authorization;
 
